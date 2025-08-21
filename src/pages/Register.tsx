@@ -1,16 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import { registerSchema, type RegisterFormData } from "../schemas/register.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerUser } from "../services/auth.service";
 import type { AxiosError } from "axios";
-import { useAuth } from "../auth/useAuth";
 import { humanizeFieldName } from "../utils/humanizeFieldName.util";
 
 export default function Register() {
-  const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -22,10 +19,10 @@ export default function Register() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: registerUser,
-    onSuccess: (data) => {
-      setUser(data);
-      navigate("/welcome");
+    onSuccess: () => {
+      queryClient.invalidateQueries();
     },
+
     onError: (err: AxiosError) => {
       console.error(err);
       alert(err?.response?.data || "Registration failed");

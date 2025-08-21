@@ -1,4 +1,101 @@
+/* GLOBAL */
 * {
   padding: none;
   margin: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* PROJECT DETAILS */
+.project-grid-3cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  gap: 16px 24px; /* vertical and horizontal spacing */
+  padding: 16px;
+}
+
+.project-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* PROJECT MILESTONES */
+
+.details-wrapper {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 8px;
+}
+
+summary {
+  cursor: pointer;
+  padding: 6px;
+}
+
+.milestone-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.milestone-dates {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* TASKS LIST */
+
+.task-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.task-wrapper:hover {
+  background: #ececec;
+}
+
+.task-ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 28px;
+}
+
+/* COMMENTS */
+
+.comment-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-item {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 6px;
 }

@@ -13,7 +13,7 @@ export default function Landing() {
         <div>
           <h3>Hello there, {user?.firstName || "traveler"}</h3>
           <p>It seems you are already authenticated, so you can go to the welcome screen instead :)</p>
-          <button onClick={() => navigate("/welcome")}>Take me there!</button>
+          <button onClick={() => navigate("/dashboard")}>Take me there!</button>
         </div>
       ) : (
         <div>

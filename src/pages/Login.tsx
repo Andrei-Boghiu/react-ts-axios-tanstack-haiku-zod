@@ -1,14 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginSchema, type LoginInput } from "../schemas/login.schema";
 import { loginUser } from "../services/auth.service";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -20,9 +17,8 @@ export default function Login() {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      setUser(data);
-      navigate("/welcome");
+    onSuccess: () => {
+      queryClient.invalidateQueries();
     },
   });
 
@@ -46,7 +42,7 @@ export default function Login() {
         {isPending ? "Logging in..." : "Login"}
       </button>
 
-      {error && <p style={{ color: "red" }}>Login failed.</p>}
+      {error && <p style={{ color: "red" }}>{error?.message || "Login failed"}</p>}
     </form>
   );
 }

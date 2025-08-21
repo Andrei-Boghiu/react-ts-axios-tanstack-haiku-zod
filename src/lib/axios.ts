@@ -1,5 +1,8 @@
 import axios from "axios";
 
+let accessToken = localStorage.getItem("accessToken");
+let refreshToken = localStorage.getItem("refreshToken");
+
 const axiosClient = axios.create({
   baseURL: "http://localhost:3000/api",
   headers: {
@@ -7,27 +10,25 @@ const axiosClient = axios.create({
   },
 });
 
-const storedAccessToken = localStorage.getItem("accessToken");
-const storedRefreshToken = localStorage.getItem("refreshToken");
+axiosClient.interceptors.request.use((config) => {
+  if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
+  if (refreshToken) config.headers["x-refresh-token"] = refreshToken;
 
-if (storedAccessToken && storedRefreshToken) {
-  axiosClient.defaults.headers.common["Authorization"] = `Bearer ${storedAccessToken}`;
-  axiosClient.defaults.headers.common["x-refresh-token"] = storedRefreshToken;
-  console.log("Authorization and Refresh tokens were updated");
-}
+  return config;
+});
 
 axiosClient.interceptors.response.use(
   (res) => {
-    const accessToken = res.headers["x-access-token"];
-    const refreshToken = res.headers["x-refresh-token"];
+    const accessTokenHeader = res.headers["x-access-token"];
+    const refreshTokenHeader = res.headers["x-refresh-token"];
 
-    if (accessToken && refreshToken) {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-
-      axiosClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-      axiosClient.defaults.headers.common["x-refresh-token"] = refreshToken;
-      console.log("Authorization and Refresh tokens were updated");
+    if (accessTokenHeader) {
+      accessToken = accessTokenHeader;
+      localStorage.setItem("accessToken", accessTokenHeader);
+    }
+    if (refreshTokenHeader) {
+      refreshToken = refreshTokenHeader;
+      localStorage.setItem("refreshToken", refreshTokenHeader);
     }
 
     return res;

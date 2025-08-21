@@ -1,43 +1,53 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logoutUser, userProfile } from "../services/auth.service";
 import { AuthContext } from "./AuthContext";
-import { useEffect } from "react";
-import { useLocalStorage } from "react-haiku";
-import type { AuthUser } from "../types/auth";
+import { useEffect, useState } from "react";
+import type { User } from "../types/user";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useLocalStorage<AuthUser | null>("last_auth_user", null);
+  const [user, setUser] = useState<User | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: profile, isLoading } = useQuery({
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["auth", "profile"],
     queryFn: userProfile,
     retry: false,
     staleTime: Infinity,
   });
 
-  const logout = async () => {
-    try {
-      queryClient.invalidateQueries();
-      await logoutUser();
-    } catch {
-      console.warn("Logout request failed unexpectedly!");
-    } finally {
+  const logoutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries(); // invalidate all queries
+      localStorage.clear();
       setUser(null);
-    }
-  };
+    },
+    onError: () => {
+      console.warn("Logout request failed unexpectedly!");
+    },
+  });
+
+  const logout = () => logoutMutation.mutate();
 
   useEffect(() => {
     if (profile) {
       if (!user || user?.id !== profile.id) {
         setUser(profile);
       }
-    } else if (!isLoading) {
+    }
+
+    if (isError) {
       setUser(null);
     }
-  }, [profile, isLoading, user, setUser]);
+  }, [profile, isLoading, isError, user]);
 
-  const isAuth = !!user;
+  const isAuth = Boolean(user && user.id);
+
+  if (isLoading) return;
 
   return <AuthContext.Provider value={{ user, setUser, logout, isLoading, isAuth }}>{children}</AuthContext.Provider>;
 };

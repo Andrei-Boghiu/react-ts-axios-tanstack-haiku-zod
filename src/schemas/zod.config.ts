@@ -1,5 +1,6 @@
 import z from "zod";
 
+export const visibilityEnum = z.enum(["PRIVATE", "PUBLIC"]);
 export const priorityEnum = z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]);
 export const statusEnum = z.enum(["PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD", "CANCELLED"]);
 export const projectStatusEnum = z.enum(["PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD", "CANCELLED", "ARCHIVED"]);

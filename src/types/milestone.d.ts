@@ -1,23 +1,16 @@
-export interface Project {
+export interface Milestone {
   id: string;
   name: string;
   description: string | null;
-  priority: Priority;
-  status: Status;
-  visibility: "PRIVATE" | "PUBLIC";
+  supervisorId: string | null;
+  status: "PLANNING" | "IN_PROGRESS" | "COMPLETED" | "ON_HOLD" | "CANCELLED";
   startDate: string | null;
   endDate: string | null;
+  projectId: string;
   createdAt: string;
   createdBy: string;
   updatedAt: string;
   updatedBy: string;
   deletedAt: string | null;
   deletedBy: string | null;
-}
-
-export interface ProjectWithMemberships extends Project {
-  Memberships: {
-    role: MembershipRole;
-    hasAccepted: boolean;
-  }[];
 }
