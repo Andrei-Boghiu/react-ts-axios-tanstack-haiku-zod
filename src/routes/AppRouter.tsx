@@ -9,6 +9,9 @@ import Welcome from "../pages/Welcome";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import AdminDashboard from "../pages/AdminDashboard";
+import CreateProject from "../pages/CreateProject";
+import Project from "../pages/Project";
+import Task from "../pages/Task";
 
 const AppRouter = () => {
   return (
@@ -19,6 +22,9 @@ const AppRouter = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/create-project" element={<CreateProject />} />
+        <Route path="/project/:id" element={<Project />} />
+        <Route path="/task/:id" element={<Task />} />
       </Route>
 
       <Route element={<AdminRoute />}>

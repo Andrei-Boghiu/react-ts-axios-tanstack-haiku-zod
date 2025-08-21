@@ -4,9 +4,9 @@ import { description, optionalDatetime, priorityEnum, projectStatusEnum } from "
 export const createProjectSchema = z.object({
   name: z.string().min(1),
   description,
-  priority: priorityEnum.optional(),
-  status: projectStatusEnum.optional(),
-  visibility: z.enum(["PRIVATE", "PUBLIC"]).optional(),
+  priority: z.optional(priorityEnum).or(z.literal("")),
+  status: z.optional(projectStatusEnum).or(z.literal("")),
+  visibility: z.optional(z.enum(["PRIVATE", "PUBLIC"])).or(z.literal("")),
   startDate: optionalDatetime,
   endDate: optionalDatetime,
 });

@@ -1,30 +1,40 @@
 import axios from "axios";
-import getCookieValue from "../utils/getCookieValue.util";
 
 const axiosClient = axios.create({
   baseURL: "http://localhost:3000/api",
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-axiosClient.interceptors.request.use((config) => {
-  const token = getCookieValue("token");
+const storedAccessToken = localStorage.getItem("accessToken");
+const storedRefreshToken = localStorage.getItem("refreshToken");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+if (storedAccessToken && storedRefreshToken) {
+  axiosClient.defaults.headers.common["Authorization"] = `Bearer ${storedAccessToken}`;
+  axiosClient.defaults.headers.common["x-refresh-token"] = storedRefreshToken;
+  console.log("Authorization and Refresh tokens were updated");
+}
 
-  return config;
-});
-
-// Optional: interceptors (e.g., auth errors, token refresh)
 axiosClient.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    // You can check for 401s, log out user, etc.
-    return Promise.reject(err);
+  (res) => {
+    const accessToken = res.headers["x-access-token"];
+    const refreshToken = res.headers["x-refresh-token"];
+
+    if (accessToken && refreshToken) {
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      axiosClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      axiosClient.defaults.headers.common["x-refresh-token"] = refreshToken;
+      console.log("Authorization and Refresh tokens were updated");
+    }
+
+    return res;
+  },
+  async (error) => {
+    // should handle 401s here, but later
+    return Promise.reject(error);
   }
 );
 

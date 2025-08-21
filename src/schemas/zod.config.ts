@@ -7,4 +7,13 @@ export const membershipRoleEnum = z.enum(["OWNER", "MANAGER", "CONTRIBUTOR", "VI
 
 export const description = z.string().trim().optional().nullable();
 
-export const optionalDatetime = z.iso.datetime().optional().nullable();
+export const optionalDatetime = z
+  .optional(
+    z.string().transform((val) => {
+      if (!val || val.trim() === "") return undefined; // allow empty strings
+      const date = new Date(val);
+      if (isNaN(date.getTime())) throw new Error("Invalid datetime");
+      return date.toISOString(); // convert to proper ISO string
+    })
+  )
+  .or(z.literal(""));
