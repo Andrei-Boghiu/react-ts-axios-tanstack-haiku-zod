@@ -70,14 +70,16 @@ export default function CreateTask() {
             />
           ))}
 
-          <button type="reset" onClick={() => navigate(-1)}>
-            Back
-          </button>
-          <button type="reset">Reset</button>
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating..." : "Create"}
           </button>
         </form>
+        <button type="reset" onClick={() => navigate(-1)}>
+          Back
+        </button>
+        <button type="reset" onClick={() => reset()}>
+          Reset
+        </button>
       </section>
     </div>
   );

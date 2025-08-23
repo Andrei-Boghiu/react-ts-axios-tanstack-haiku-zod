@@ -73,7 +73,9 @@ export default function CreateProject() {
         <button type="reset" onClick={() => navigate(-1)}>
           Back
         </button>
-        <button type="reset">Reset</button>
+        <button type="reset" onClick={() => reset()}>
+          Reset
+        </button>
       </section>
     </div>
   );
