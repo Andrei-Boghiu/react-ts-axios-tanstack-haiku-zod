@@ -13,6 +13,9 @@ import CreateProject from "../pages/CreateProject";
 import Project from "../pages/Project";
 import Task from "../pages/Task";
 import AuthRoute from "./AuthRoute";
+import CreateMilestone from "../pages/CreateMilestone";
+import Milestone from "../pages/Milestone";
+import CreateTask from "../pages/CreateTask";
 
 const AppRouter = () => {
   return (
@@ -27,7 +30,17 @@ const AppRouter = () => {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create-project" element={<CreateProject />} />
-        <Route path="/project/:id" element={<Project />} />
+
+        <Route path="/project/:projectId">
+          <Route index element={<Project />} />
+          <Route path="create-milestone" element={<CreateMilestone />} />
+        </Route>
+
+        <Route path="/milestone/:id">
+          <Route index element={<Milestone />} />
+          <Route path="create-task" element={<CreateTask />} />
+        </Route>
+
         <Route path="/task/:id" element={<Task />} />
       </Route>
 

@@ -1,0 +1,16 @@
+.project-grid-3cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 24px;
+  padding: 16px;
+}
+
+.project-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}

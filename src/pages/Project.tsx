@@ -5,7 +5,7 @@ import ProjectDetails from "../components/ProjectDetails";
 import ProjectMilestoneList from "../components/ProjectMilestoneList";
 
 export default function Project() {
-  const { id = "" } = useParams();
+  const { projectId = "" } = useParams();
 
   const {
     data: project,
@@ -14,13 +14,18 @@ export default function Project() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["projects", id],
-    queryFn: () => getProjectById(id),
-    enabled: Boolean(id),
+    queryKey: ["projects", projectId],
+    queryFn: () => getProjectById(projectId),
+    enabled: Boolean(projectId),
   });
 
-  if (!id) return <div>No project ID provided</div>;
-  if (isError) return <div>Error loading project details: {error.message}</div>;
+  if (!projectId) return <div>No project ID provided</div>;
+
+  if (isError) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return <div>Error loading project details: {message}</div>;
+  }
+
   if (isLoading || !project) return <div>Loading...</div>;
 
   return (

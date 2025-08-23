@@ -1,13 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function ProtectedRoute() {
-  const { isAuth } = useAuth();
+  const { isAuth, isLoading } = useAuth();
 
-  // useEffect(() => {
+  const navigate = useNavigate();
 
-  // }, [isAuth])
+  useEffect(() => {
+    if (!isLoading && !isAuth) navigate("/login", { replace: true });
+  }, [isLoading, isAuth, navigate]);
 
-  return isAuth ? <Outlet /> : <Navigate to="/" replace />;
+  if (isLoading) return <div>Authenticating...</div>;
+
+  if (!isAuth) return null; // nothing to render while redirecting
+  return <Outlet />;
 }

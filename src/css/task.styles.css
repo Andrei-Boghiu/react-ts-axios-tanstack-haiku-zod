@@ -1,0 +1,24 @@
+.task-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.task-wrapper:hover {
+  background: #ececec;
+}
+
+.task-ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 28px;
+}

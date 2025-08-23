@@ -1,0 +1,38 @@
+.block {
+  display: block;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.dashboard-first-row {
+  display: flex;
+  gap: 3rem;
+}
+
+.dashboard-first-row > :first-child {
+  flex: 1;
+}
+
+.dashboard-first-row > :nth-child(2) {
+  flex: 3;
+}
+
+.dashboard-first-row > :nth-child(2) table {
+  width: 100%;
+}
+
+.recent-projects-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 50px;
+  margin-bottom: 16px;
+}

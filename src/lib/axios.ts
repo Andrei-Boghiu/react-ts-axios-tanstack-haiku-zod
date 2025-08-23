@@ -1,7 +1,7 @@
 import axios from "axios";
 
-let accessToken = localStorage.getItem("accessToken");
-let refreshToken = localStorage.getItem("refreshToken");
+let accessToken = window.localStorage.getItem("accessToken");
+let refreshToken = window.localStorage.getItem("refreshToken");
 
 const axiosClient = axios.create({
   baseURL: "http://localhost:3000/api",
@@ -24,11 +24,11 @@ axiosClient.interceptors.response.use(
 
     if (accessTokenHeader) {
       accessToken = accessTokenHeader;
-      localStorage.setItem("accessToken", accessTokenHeader);
+      window.localStorage.setItem("accessToken", accessTokenHeader);
     }
     if (refreshTokenHeader) {
       refreshToken = refreshTokenHeader;
-      localStorage.setItem("refreshToken", refreshTokenHeader);
+      window.localStorage.setItem("refreshToken", refreshTokenHeader);
     }
 
     return res;

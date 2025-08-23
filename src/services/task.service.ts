@@ -3,8 +3,8 @@ import type { CreateTaskFormData, UpdateTaskFormData } from "../schemas/task.sch
 import type { Task } from "../types/task";
 import type { PaginatedResponse } from "../types/types";
 
-export const createTask = async (data: CreateTaskFormData): Promise<Task> => {
-  const res = await axios.post("/tasks", data);
+export const createTask = async (milestoneId: string, data: CreateTaskFormData): Promise<Task> => {
+  const res = await axios.post(`/tasks/${milestoneId}`, data);
   return res.data;
 };
 

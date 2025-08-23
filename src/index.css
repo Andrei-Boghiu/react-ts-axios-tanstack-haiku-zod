@@ -1,44 +1,44 @@
-/* GLOBAL */
 * {
   padding: none;
   margin: none;
+  box-sizing: border-box;
+
+  /* Fancy */
+  font-family: sans-serif;
+  text-align: left;
+  color: #374151;
+  background-color: #f8f9fa;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+main {
+  flex: 1;
 }
 
 ul {
   list-style-type: none;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-/* PROJECT DETAILS */
-.project-grid-3cols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-  gap: 16px 24px; /* vertical and horizontal spacing */
-  padding: 16px;
-}
-
-.project-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-weight: bold;
+link {
   margin-bottom: 4px;
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-/* PROJECT MILESTONES */
-
-.details-wrapper {
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-top: 8px;
+link:hover {
+  color: #111827;
+  text-decoration: underline;
 }
 
 summary {
@@ -46,56 +46,48 @@ summary {
   padding: 6px;
 }
 
-.milestone-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: start;
+label {
+  font-weight: 600;
 }
 
-.milestone-dates {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-/* TASKS LIST */
-
-.task-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+input,
+textarea,
+select,
+button {
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding-right: 1rem;
-  padding-left: 1rem;
-  margin-top: 6px;
+  font: inherit;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+p[role="alert"] {
+  color: #b91c1c; /* error red */
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+button {
   cursor: pointer;
+  border: none;
+  background: #4b5563;
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  margin: 5px;
 }
 
-.task-wrapper:hover {
-  background: #ececec;
+button:hover:not(:disabled) {
+  background: #374151;
 }
 
-.task-ul {
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  gap: 28px;
-}
-
-/* COMMENTS */
-
-.comment-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.comment-item {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 6px;
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
 }

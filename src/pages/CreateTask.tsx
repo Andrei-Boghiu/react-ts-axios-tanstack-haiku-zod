@@ -1,40 +1,40 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProject } from "../services/project.service";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createProjectSchema, type CreateProjectFormData } from "../schemas/project.schema";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { createTask } from "../services/task.service";
 import { sanitizeOptionalFields } from "../utils/sanitizeOptionalFields.utils";
+import { createTaskSchema, type CreateTaskFormData } from "../schemas/task.schema";
 import { FormField, type InputType } from "../components/FormField";
 
-const fieldInputTypes: Record<keyof CreateProjectFormData, InputType> = {
-  name: "text",
+const fieldInputTypes: Record<keyof CreateTaskFormData, InputType> = {
+  title: "text",
   description: "textarea",
   priority: "select",
   status: "select",
-  visibility: "select",
-  startDate: "datetime-local",
-  endDate: "datetime-local",
+  dueDate: "datetime-local",
+  assigneeId: "text",
 };
 
-export default function CreateProject() {
+export default function CreateTask() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { milestoneId = "" } = useParams();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateProjectFormData>({
-    resolver: zodResolver(createProjectSchema),
+  } = useForm<CreateTaskFormData>({
+    resolver: zodResolver(createTaskSchema),
   });
 
   const { mutate } = useMutation({
-    mutationFn: createProject,
+    mutationFn: (data: CreateTaskFormData) => createTask(milestoneId, data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      navigate(`/project/${data.id}`);
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      navigate(`/task/${data.id}`);
       reset();
     },
     onError: (error) => {
@@ -42,38 +42,42 @@ export default function CreateProject() {
     },
   });
 
-  const onSubmit = (data: CreateProjectFormData) => {
+  const onSubmit = (data: CreateTaskFormData) => {
     const sanitizedData = sanitizeOptionalFields(data);
     mutate(sanitizedData);
   };
 
-  const fields = Object.keys(createProjectSchema.shape) as Array<keyof CreateProjectFormData>;
+  const fields = Object.keys(createTaskSchema.shape) as Array<keyof CreateTaskFormData>;
 
   return (
     <div>
-      <section aria-labelledby="create-project-title">
-        <h2 id="create-project-title">Create Project</h2>
+      <section aria-labelledby="create-task-title">
+        <h2 id="create-task-title">Create Task</h2>
+        <div>
+          <strong>Milestone id: </strong>
+          {milestoneId}
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {fields.map((name) => (
             <FormField
               key={name}
               name={name}
               type={fieldInputTypes[name]}
-              schema={createProjectSchema}
+              schema={createTaskSchema}
               register={register}
               errors={errors}
               disabled={isSubmitting}
             />
           ))}
 
+          <button type="reset" onClick={() => navigate(-1)}>
+            Back
+          </button>
+          <button type="reset">Reset</button>
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating..." : "Create"}
           </button>
         </form>
-        <button type="reset" onClick={() => navigate(-1)}>
-          Back
-        </button>
-        <button type="reset">Reset</button>
       </section>
     </div>
   );

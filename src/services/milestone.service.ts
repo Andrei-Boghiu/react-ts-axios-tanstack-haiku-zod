@@ -3,8 +3,8 @@ import type { CreateMilestoneFormData, UpdateMilestoneFormData } from "../schema
 import type { Milestone } from "../types/milestone";
 import type { PaginatedResponse } from "../types/types";
 
-export const createMilestone = async (data: CreateMilestoneFormData): Promise<Milestone> => {
-  const res = await axios.post("/milestones", data);
+export const createMilestone = async (projectId: string, data: CreateMilestoneFormData): Promise<Milestone> => {
+  const res = await axios.post(`/milestones/${projectId}`, data);
   return res.data;
 };
 

@@ -1,12 +1,22 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logoutUser, userProfile } from "../services/auth.service";
 import { AuthContext } from "./AuthContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import type { User } from "../types/user";
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+const stringUser = window.localStorage.getItem("AUTH_USER");
+const storedUser = stringUser ? JSON.parse(stringUser) : null;
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(storedUser);
+  const [initialized, setInitialized] = useState<boolean>(false);
   const queryClient = useQueryClient();
+
+  const logoutCallback = useCallback(() => {
+    queryClient.invalidateQueries();
+    localStorage.clear();
+    setUser(null);
+  }, [queryClient]);
 
   const {
     data: profile,
@@ -15,17 +25,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ["auth", "profile"],
     queryFn: userProfile,
+    enabled: !initialized,
     retry: false,
     staleTime: Infinity,
   });
 
   const logoutMutation = useMutation({
     mutationFn: logoutUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries(); // invalidate all queries
-      localStorage.clear();
-      setUser(null);
-    },
+    onSuccess: logoutCallback,
     onError: () => {
       console.warn("Logout request failed unexpectedly!");
     },
@@ -34,20 +41,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => logoutMutation.mutate();
 
   useEffect(() => {
-    if (profile) {
-      if (!user || user?.id !== profile.id) {
-        setUser(profile);
-      }
-    }
-
     if (isError) {
-      setUser(null);
+      logoutCallback();
+      setInitialized(true);
     }
-  }, [profile, isLoading, isError, user]);
+  }, [isError, logoutCallback]);
 
-  const isAuth = Boolean(user && user.id);
+  useEffect(() => {
+    if (profile && (!user || user.id !== profile.id)) {
+      setUser(profile);
+      window.localStorage.setItem("AUTH_USER", JSON.stringify(profile));
+    }
+    if (profile) {
+      setInitialized(true);
+    }
+  }, [profile, user]);
 
-  if (isLoading) return;
+  const isAuth = Boolean(user?.id);
 
-  return <AuthContext.Provider value={{ user, setUser, logout, isLoading, isAuth }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, setUser, logout, isLoading: isLoading || logoutMutation.isPending, isAuth }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

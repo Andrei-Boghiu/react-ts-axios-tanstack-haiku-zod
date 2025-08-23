@@ -1,40 +1,40 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProject } from "../services/project.service";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createProjectSchema, type CreateProjectFormData } from "../schemas/project.schema";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { createMilestone } from "../services/milestone.service";
 import { sanitizeOptionalFields } from "../utils/sanitizeOptionalFields.utils";
+import { createMilestoneSchema, type CreateMilestoneFormData } from "../schemas/milestone.schema";
 import { FormField, type InputType } from "../components/FormField";
 
-const fieldInputTypes: Record<keyof CreateProjectFormData, InputType> = {
+const fieldInputTypes: Record<keyof CreateMilestoneFormData, InputType> = {
   name: "text",
   description: "textarea",
-  priority: "select",
+  supervisorId: "text",
   status: "select",
-  visibility: "select",
   startDate: "datetime-local",
   endDate: "datetime-local",
 };
 
-export default function CreateProject() {
+export default function CreateMilestone() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { projectId = "" } = useParams();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateProjectFormData>({
-    resolver: zodResolver(createProjectSchema),
+  } = useForm<CreateMilestoneFormData>({
+    resolver: zodResolver(createMilestoneSchema),
   });
 
   const { mutate } = useMutation({
-    mutationFn: createProject,
+    mutationFn: (data: CreateMilestoneFormData) => createMilestone(projectId, data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      navigate(`/project/${data.id}`);
+      queryClient.invalidateQueries({ queryKey: ["milestones"] });
+      navigate(`/milestone/${data.id}`);
       reset();
     },
     onError: (error) => {
@@ -42,38 +42,42 @@ export default function CreateProject() {
     },
   });
 
-  const onSubmit = (data: CreateProjectFormData) => {
+  const onSubmit = (data: CreateMilestoneFormData) => {
     const sanitizedData = sanitizeOptionalFields(data);
     mutate(sanitizedData);
   };
 
-  const fields = Object.keys(createProjectSchema.shape) as Array<keyof CreateProjectFormData>;
+  const fields = Object.keys(createMilestoneSchema.shape) as Array<keyof CreateMilestoneFormData>;
 
   return (
     <div>
-      <section aria-labelledby="create-project-title">
-        <h2 id="create-project-title">Create Project</h2>
+      <section aria-labelledby="create-milestone-title">
+        <h2 id="create-milestone-title">Create Milestone</h2>
+        <div>
+          <strong>Project id: </strong>
+          {projectId}
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {fields.map((name) => (
             <FormField
               key={name}
               name={name}
               type={fieldInputTypes[name]}
-              schema={createProjectSchema}
+              schema={createMilestoneSchema}
               register={register}
               errors={errors}
               disabled={isSubmitting}
             />
           ))}
 
+          <button type="reset" onClick={() => navigate(-1)}>
+            Back
+          </button>
+          <button type="reset">Reset</button>
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating..." : "Create"}
           </button>
         </form>
-        <button type="reset" onClick={() => navigate(-1)}>
-          Back
-        </button>
-        <button type="reset">Reset</button>
       </section>
     </div>
   );

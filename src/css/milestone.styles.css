@@ -1,0 +1,19 @@
+.details-wrapper {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 8px;
+}
+
+.milestone-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.milestone-dates {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

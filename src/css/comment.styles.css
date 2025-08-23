@@ -1,0 +1,11 @@
+.comment-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-item {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 6px;
+}

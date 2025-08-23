@@ -3,15 +3,17 @@ import { useAuth } from "../auth/useAuth";
 import { useEffect } from "react";
 
 export default function AuthRoute() {
-  const { isAuth } = useAuth();
+  const { isAuth, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) {
+    if (!isLoading && isAuth) {
       navigate("/dashboard", { replace: true });
     }
-  }, [isAuth, navigate]);
+  }, [isLoading, isAuth, navigate]);
 
-  if (isAuth) return null; // nothing to render while redirecting
+  if (isLoading) return <div>Authenticating...</div>;
+
+  if (isAuth) return null; // ! to replace with global spinner // nothing to render while redirecting
   return <Outlet />;
 }
