@@ -29,14 +29,14 @@ ul {
   list-style-type: none;
 }
 
-link {
+a {
   margin-bottom: 4px;
   color: #4b5563;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-link:hover {
+a:hover {
   color: #111827;
   text-decoration: underline;
 }
@@ -68,6 +68,8 @@ select:disabled {
 }
 
 p[role="alert"] {
+  text-align: center;
+  margin: 24px;
   color: #b91c1c; /* error red */
   font-size: 0.875rem;
   margin: 0;

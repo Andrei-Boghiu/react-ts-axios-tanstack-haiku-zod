@@ -1,8 +1,5 @@
 import axios from "axios";
 
-let accessToken = window.localStorage.getItem("accessToken");
-let refreshToken = window.localStorage.getItem("refreshToken");
-
 const axiosClient = axios.create({
   baseURL: "http://localhost:3000/api",
   headers: {
@@ -11,6 +8,9 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use((config) => {
+  const accessToken = window.localStorage.getItem("accessToken");
+  const refreshToken = window.localStorage.getItem("refreshToken");
+
   if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
   if (refreshToken) config.headers["x-refresh-token"] = refreshToken;
 
@@ -22,14 +22,10 @@ axiosClient.interceptors.response.use(
     const accessTokenHeader = res.headers["x-access-token"];
     const refreshTokenHeader = res.headers["x-refresh-token"];
 
-    if (accessTokenHeader) {
-      accessToken = accessTokenHeader;
-      window.localStorage.setItem("accessToken", accessTokenHeader);
-    }
-    if (refreshTokenHeader) {
-      refreshToken = refreshTokenHeader;
-      window.localStorage.setItem("refreshToken", refreshTokenHeader);
-    }
+    console.log(!!accessTokenHeader, !!refreshTokenHeader);
+
+    if (accessTokenHeader) window.localStorage.setItem("accessToken", accessTokenHeader);
+    if (refreshTokenHeader) window.localStorage.setItem("refreshToken", refreshTokenHeader);
 
     return res;
   },

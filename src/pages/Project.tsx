@@ -23,7 +23,7 @@ export default function Project() {
 
   if (isError) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    return <div>Error loading project details: {message}</div>;
+    return <p role="alert">Error loading project details: {message}</p>;
   }
 
   if (isLoading || !project) return <div>Loading...</div>;
